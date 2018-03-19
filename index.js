@@ -192,7 +192,7 @@ function TopSdk(appKey, appSecret, settings) {
             url = 'ws://mc.api.taobao.com/'
         }
         group_name = group_name || 'default';
-        url = url || 'ws://mc.api.taobao.com/';
+        url = url || process.env["TOP_TMC_URL"] || 'ws://mc.api.taobao.com/';
         var tmcClient = new tmc(appKey, appSecret, group_name);
         tmcClient.connect(url, async function (message, cb) {
             var err;

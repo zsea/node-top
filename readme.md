@@ -59,7 +59,7 @@ Listen包含三个参数：
 
 * group_name:监听的消息分组，默认值：default
 
-* url:连接到的淘宝消息服务器，默认值：ws://mc.api.taobao.com/
+* url:连接到的淘宝消息服务器，也可以通过环境变量TOP_TMC_URL设置，默认值：ws://mc.api.taobao.com/
 
 * handler:消息处理函数,一个async函数或者Promise对象
 
