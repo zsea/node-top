@@ -64,8 +64,10 @@ function TopSdk(appKey, appSecret, settings) {
     //var batch_url = settings.batch_url || 'http://gw.api.taobao.com/router/batch';
     this.Execute = async function (method, options, _settings) {
         var set = Object.assign({}, settings, _settings);
-        var times = set.retry_times || 5;
-        var times = 0, retry_times = set.retry_times || 5;
+        //var times = set.retry_times || 5;
+        var times = 0, retry_times = set.retry_times || process.env["TOP_MAX_RETRY_TIMES"] || 5
+            , retry_interval = set.retry_interval || process.env["TOP_RETRY_INTERVAL"] || 5000
+            ;
         var response;
         while (times < retry_times) {
             times++;
@@ -150,25 +152,25 @@ function TopSdk(appKey, appSecret, settings) {
             }
             catch (e) {
                 debug('调用top接口错误：', e);
-                await sleep(Math.pow(times, 2) * 1000);
+                await sleep(retry_interval);
                 continue
             }
             emitter.emit('completed', _options, response)
             //console.log(response);
             if (!response) {
-                await sleep(Math.pow(times, 2) * 1000);
+                await sleep(retry_interval);
                 continue
             };
             var retry_code = set.retry_code || []
             if (response && response.error_response && response.error_response.sub_code) {
                 if ((response.error_response.sub_code.indexOf('isp.') > -1 && response.error_response.sub_code.indexOf('isp.invalid-parameters') == -1)) {
-                    await sleep(Math.pow(times, 2) * 1000);
+                    await sleep(retry_interval);
                     continue;
                 }
                 if ((response.error_response.sub_code == 'accesscontrol.limited-by-api-access-count'
                     || response.error_response.sub_code == 'accesscontrol.limited-by-dynamic-access-count'
                     || retry_code.indexOf(response.error_response.sub_code) != -1)) {
-                    await sleep(Math.pow(times, 2) * 1000);
+                    await sleep(retry_interval);
                     continue;
                 }
             }

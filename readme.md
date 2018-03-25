@@ -9,13 +9,15 @@ var response=await top.Execute(method,args);
 ```
 # 设置
 
-* timeout:指定超时时间，默认30秒，单位ms
+* timeout:指定超时时间，默认*30*秒，单位```ms```
 
-* retry_times:当发生错误时，最大重试次数，默认5次
+* retry_times:当发生错误时，也可以通过环境变量```TOP_MAX_RETRY_TIMES```指定，最大重试次数，默认5次
 
-* retry_code:自定义的可以重试的错误代码，默认：[]
+* retry_code:自定义的可以重试的错误代码，默认：[]。淘宝平台的isp错误都会重试。
 
-* rest_url:淘宝开放平台接口调用地址，也可以通过环境变量TOP_REST_URL指定，默认值：http://gw.api.taobao.com/router/rest
+* rest_url:淘宝开放平台接口调用地址，也可以通过环境变量```TOP_REST_URL```指定，默认值：```http://gw.api.taobao.com/router/rest```
+
+* retry_interval:发生可重试错误的间隔时间，也可以通过环境变量```TOP_RETRY_INTERVAL```指定，单位```ms```，默认值：*5000*
 
 # 附件上传
 
@@ -72,6 +74,10 @@ top.Listen(async function(message){
 ```
 
 # 更新日志
+
+* 2018-03-19 增加通过环境变量设置重试次数和重试间隔
+
+* 2018-03-19 增加通过环境变量设置接口地址
 
 * 2017-05-22 修正不能上传附件
 
