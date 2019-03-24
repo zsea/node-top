@@ -1,5 +1,8 @@
 var crypto = require('crypto'), moment = require('moment'), fetch = require('node-fetch'), qs = require('querystring'), FormData = require('form-data');
 var _emitter = require('events').EventEmitter, tmc = require('./tmc/tmcClient').TmcClient;
+const HttpsProxyAgent = require('https-proxy-agent')
+    , HttpProxyAgent = require('http-proxy-agent');
+
 global.debug = global.debug || function () { }
 function sleep(ms) {
     return new Promise(function (resolve) {
@@ -136,7 +139,20 @@ function TopSdk(appKey, appSecret, settings) {
             }
             try {
                 debug('headers', request_options.headers)
-                response = await fetch(set.rest_url || process.env["TOP_REST_URL"] || 'http://gw.api.taobao.com/router/rest', request_options).then(function (res) {
+                var agent = null, proxy = set.TOP_PROXY || process.env["TOP_PROXY"];
+                var api_url=set.rest_url || process.env["TOP_REST_URL"] || 'http://gw.api.taobao.com/router/rest';
+                if(proxy){
+                    if(api_url.indexOf("https")==0){
+                        agent=new HttpsProxyAgent(proxy);
+                    }
+                    else{
+                        agent=new HttpProxyAgent(proxy);
+                    }
+                }
+                if(agent){
+                    request_options["agent"]=agent;
+                }
+                response = await fetch(api_url, request_options).then(function (res) {
                     //console.log(res)
                     if (res.ok) {
                         return res.json();

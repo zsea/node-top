@@ -19,6 +19,8 @@ var response=await top.Execute(method,args);
 
 * retry_interval:发生可重试错误的间隔时间，也可以通过环境变量```TOP_RETRY_INTERVAL```指定，单位```ms```，默认值：*5000*
 
+* TOP_PROXY:通过代理服务器访问TOP平台。也可以通过环境变量```TOP_PROXY```设置代理服务器。
+
 # 附件上传
 
 对于文件上传，可以直接指定参数为可读流。也可以指定为一个对象
@@ -74,6 +76,8 @@ top.Listen(async function(message){
 ```
 
 # 更新日志
+
+* 2019-03-24 增加通过环境变量设置代理服务器。
 
 * 2018-03-19 增加通过环境变量设置重试次数和重试间隔
 
